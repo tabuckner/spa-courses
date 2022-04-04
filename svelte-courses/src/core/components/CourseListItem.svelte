@@ -1,25 +1,43 @@
 <script lang="ts">
-import type { CourseModel } from "../models/course.model";
-
+  import type { CourseModel } from "../models/course.model";
+  import students from "../services/students.service";
 
   export let course: CourseModel;
+  let registered = false;
+
+  $: hasCompletedAllPrerequisites =
+    students.hasCompletedAllPrerequisites(course);
+
+  const handleRegister = () => {
+    registered = !registered;
+  };
 </script>
 
-<div class="course-list-item">
-  <div class="course-list-item__content">
-    <div class="course-list-item__name">
-      {course.name}
+{#await hasCompletedAllPrerequisites then canRegister}
+  <div class="course-list-item">
+    <div class="course-list-item__content">
+      <div class="course-list-item__name">
+        {course.name}
+      </div>
+      <div class="course-list-item__prerequisites">
+        {canRegister}
+        Prereqs: {course.prerequisites
+          .map((prerequisite) => prerequisite.name)
+          .join(", ")}
+      </div>
     </div>
-    <div class="course-list-item__prerequisites">
-      Prereqs: {course.prerequisites.map(prerequisite => prerequisite.name)}
+    <div class="course-list-item__actions">
+      <div class="course-list-item__register">
+        {#if registered}
+          <label>Registered</label>
+          <input type="checkbox" checked disabled />
+        {:else}
+          <button on:click={handleRegister} disabled={!canRegister}>Register</button>
+        {/if}
+      </div>
     </div>
   </div>
-  <div class="course-list-item__actions">
-    <div class="course-list-item__register">
-        <button>Register</button>
-    </div>
-  </div>
-</div>
+{/await}
 
 <style lang="scss">
   .course-list-item {
@@ -30,11 +48,10 @@ import type { CourseModel } from "../models/course.model";
     background-color: white;
     display: flex;
     align-items: center;
-    transition: all .2s ease-in-out;
-
+    transition: all 0.2s ease-in-out;
 
     &:hover {
-      box-shadow: 1px 2px 3px rgba(0,0,0,0.33);
+      box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.33);
     }
 
     &__name {
@@ -48,6 +65,15 @@ import type { CourseModel } from "../models/course.model";
     &__actions {
       button {
         cursor: pointer;
+      }
+    }
+
+    &__register {
+      display: flex;
+      align-items: center;
+
+      label {
+        margin-right: 4px;
       }
     }
   }

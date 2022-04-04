@@ -2,10 +2,12 @@
   import { onMount } from "svelte";
 
   import courses from "../services/courses.service";
+import students from "../services/students.service";
   import { currentTermsCourses } from "../state/core.store";
   import CourseListItem from "./CourseListItem.svelte";
 
   onMount(async () => {
+    await students.getStudentsRegistrations();
     await courses.getCurrentTermsCourses();
   });
 </script>
