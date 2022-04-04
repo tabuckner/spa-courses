@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { CourseModel } from "../models/course.model";
   import students from "../services/students.service";
+import PrerequisitesRow from "./PrerequisitesRow.svelte";
 
   export let course: CourseModel;
   let registered = false;
@@ -20,11 +21,13 @@
         {course.name}
       </div>
       <div class="course-list-item__prerequisites">
-        {canRegister}
+       <PrerequisitesRow prerequisites={course.prerequisites}></PrerequisitesRow>
+      </div>
+      <!-- <div class="course-list-item__prerequisites">
         Prereqs: {course.prerequisites
           .map((prerequisite) => prerequisite.name)
           .join(", ")}
-      </div>
+      </div> -->
     </div>
     <div class="course-list-item__actions">
       <div class="course-list-item__register">
@@ -32,7 +35,7 @@
           <label>Registered</label>
           <input type="checkbox" checked disabled />
         {:else}
-          <button on:click={handleRegister} disabled={!canRegister}>Register</button>
+          <button on:click={handleRegister} disabled={!canRegister}>{canRegister ? 'Register' : 'Prereqs Incomplete'}</button>
         {/if}
       </div>
     </div>

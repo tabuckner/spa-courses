@@ -23,15 +23,24 @@ const hasCompletedAllPrerequisites = async ({ prerequisites }: CourseModel): Pro
     currentStudentsRegistrations.subscribe(registrations => {
       const previouslyCompletedCourses = getPreviouslyCompletedCourses(registrations);
 
-      console.warn(registrations, previouslyCompletedCourses)
       const prerequisiteCompletedList = prerequisites.map(prerequisite => {
         return previouslyCompletedCourses.findIndex((completedCourse) => completedCourse.id === prerequisite.id) > -1;
       });
 
       allPrerequisitesCompleted = prerequisiteCompletedList.indexOf(false) < 0;
-    });
+    })();
 
     return res(allPrerequisitesCompleted);
+  });
+}
+
+const isPrerequisiteSatisfied = (prerequisite: CourseModel): Promise<boolean> => {
+  return new Promise(res => {
+    currentStudentsRegistrations.subscribe(registrations => {
+      const previouslyCompletedCourses = getPreviouslyCompletedCourses(registrations);
+
+      return res(previouslyCompletedCourses.findIndex((completedCourse) => completedCourse.id === prerequisite.id) > -1);
+    })();
   });
 }
 
@@ -42,6 +51,7 @@ const getPreviouslyCompletedCourses = (registrations: Array<RegistrationModel>):
 const students = {
   getStudentsRegistrations,
   hasCompletedAllPrerequisites,
+  isPrerequisiteSatisfied,
 };
 
 export default students;
