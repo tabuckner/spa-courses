@@ -30,6 +30,12 @@ import type { CourseModel } from "../models/course.model";
     background-color: white;
     display: flex;
     align-items: center;
+    transition: all .2s ease-in-out;
+
+
+    &:hover {
+      box-shadow: 1px 2px 3px rgba(0,0,0,0.33);
+    }
 
     &__name {
       margin-bottom: 16px;
@@ -39,7 +45,10 @@ import type { CourseModel } from "../models/course.model";
       flex-grow: 2;
     }
 
-    &__prerequisites {
+    &__actions {
+      button {
+        cursor: pointer;
+      }
     }
   }
 </style>

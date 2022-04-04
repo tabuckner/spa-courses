@@ -3,7 +3,7 @@
 
   import courses from "../services/courses.service";
   import { currentTermsCourses } from "../state/core.store";
-import CourseListItem from "./CourseListItem.svelte";
+  import CourseListItem from "./CourseListItem.svelte";
 
   onMount(async () => {
     await courses.getCurrentTermsCourses();
@@ -13,9 +13,15 @@ import CourseListItem from "./CourseListItem.svelte";
 <div class="course-list">
   {#if $currentTermsCourses}
     {#each $currentTermsCourses as course (course.id)}
-      <CourseListItem {course}></CourseListItem>
+      <CourseListItem {course} />
     {/each}
   {:else}
     <p>No currently offered courses.</p>
   {/if}
 </div>
+
+<style lang="scss">
+  .course-list {
+    padding: 24px 16px;
+  }
+</style>
